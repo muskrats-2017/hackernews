@@ -1,0 +1,28 @@
+{% extends "blog/_base.html" %}
+
+{% block title %}
+    Update Post 
+
+{% endblock title %}
+
+
+
+{% block header %}
+    <h1>Update Post</h1>
+    {{ block.super }}
+
+    
+
+{% endblock header %}
+
+{% block main %}
+    <form action="{% url 'blog:update' pk=post.id %}" method="POST">
+        
+        {{ update_blog_form }}
+                
+        {% csrf_token %}
+        
+        <input type="submit" value="Update">
+
+    </form>
+{% endblock main %}

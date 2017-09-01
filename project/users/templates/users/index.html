@@ -1,0 +1,20 @@
+{% extends 'users/_base.html' %}
+
+{% block title %}WELCOME TO THE THUNDERDOME, BITCH {% endblock title %}
+
+{% block header %} {% endblock header %}
+
+{% block main %}
+<div>
+    <p>
+        <a href="{% url 'users:create' %}"> Register 
+        </a>
+    </p>
+    <p>
+        <a href="{% url 'users:login' %}"> Login 
+        </a>
+    </p> 
+</div>
+{% endblock main %}
+
+{% block footer %} {% endblock footer %}

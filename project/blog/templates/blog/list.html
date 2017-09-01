@@ -1,0 +1,32 @@
+{% extends "blog/_base.html" %}
+
+{% block title %}
+    HackerNews Clone
+
+{% endblock title %}
+
+{% block header %}
+	<div class="container" id="heading">
+	    <b>HackerNews</b>
+
+
+	    <a href="{% url 'blog:create' %}"> | Create Post</a>
+	</div>
+
+{% endblock header %}
+
+{% block main %}
+	<div class="container" id="all-posts">
+		<ol>
+			{% for post in post_list %}
+				<li>
+					<a href="{% url 'blog:detail' pk=post.id %}" class="title">{{post.title}}</a>
+					<p id="subtext"> Created At: {{post.created_at}} | Posted By: {{post.created_by}} </p>
+
+
+				</li>
+			{% endfor %}
+		</ol>
+	</div>
+	
+{% endblock main %}

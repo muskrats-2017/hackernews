@@ -1,0 +1,27 @@
+{% extends "blog/_base.html" %}
+
+{% block title %}
+    Delete Post
+
+{% endblock title %}
+
+
+
+{% block header %}
+    <h1>Delete Comment</h1>
+    {{ block.super }}
+
+    
+
+{% endblock header %}
+
+{% block main %}
+    <form action="{% url 'blog:delete-comment' pk=post.id comment_pk=comment.id %}" method="POST">
+        
+                
+        {% csrf_token %}
+        
+        <input type="submit" value="Delete">
+
+    </form>
+{% endblock main %}

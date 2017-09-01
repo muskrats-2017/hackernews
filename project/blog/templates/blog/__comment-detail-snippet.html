@@ -1,0 +1,23 @@
+{% load blog_extras %}
+
+<div id='title'>
+	<p>{{ comment.content }}</p>
+
+	{{comment.name}}
+	<a href="{% url 'blog:update-comment' pk=comment.parent_id comment_pk=comment.id %}">Update Comment</a> <br>
+	<a href="{% url 'blog:delete-comment' pk=comment.parent_id comment_pk=comment.id %}">Delete Comment</a> <br>
+	<a href="{% url 'blog:reply-view' comment_pk=comment.id %}">Reply Comment</a>
+
+	
+	
+	<ul>
+		{% for comment in comments %}
+
+		<li>
+			{% get_comment_detail comment %}
+			
+		</li>
+		{% endfor %}
+	</ul>
+</div>
+

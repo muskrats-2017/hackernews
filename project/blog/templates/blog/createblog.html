@@ -1,0 +1,29 @@
+{% extends "blog/_base.html" %}
+
+{% load bootstrap3 %}
+
+{% block title %}
+	Create Index
+{% endblock title %}
+
+
+{% block header %}
+	<h1>Create Blog Post</h1>
+	{{ block.super }}
+{% endblock header %}
+
+
+{% block main %}
+	<form action="{% url 'blog:create' %}" method="POST" class="form">
+		
+		{% csrf_token %}
+
+		{% bootstrap_form blog_form %}
+		
+		 {% buttons %}
+			<button type="submit" class="btn btn-primary">
+			{% bootstrap_icon "star" %} Create
+			</button>
+		{% endbuttons %}
+	</form>
+{% endblock main %}
