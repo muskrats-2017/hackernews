@@ -1,6 +1,6 @@
 import datetime
 from django.shortcuts import render, redirect, get_object_or_404	
-from django.http import HttpResponseNotAllowed
+from django.http import HttpResponseNotAllowed, HttpResponse
 from django.utils import timezone
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -273,14 +273,28 @@ class CreateReplyView(LoginRequiredMixin, View):
 			comment.user = request.user
 			comment.parent = obj
 			comment.save()
-			return redirect(self.success_url)
+			context = {
+				'comment': comment,
+				'comments' : []
+			}
+			response = self.get_response(request, context)
+			return response or redirect(self.success_url)
 		else:
-
+			print(dir(comment_form))
+			print(comment_form.errors)
+			#print(comment_form.as_p())
+			if request.is_ajax():
+				return HttpResponse(comment_form.errors, status=400)
 			context = {
 				'comment_form': comment_form,
 				'comment': obj
 			}
 			return render(request, self.template_name, context)
+
+	def get_response(self, request, context=None):
+		if request.is_ajax():
+			return render(request, "blog/__comment-detail-snippet.html", context)
+
 
 
 
