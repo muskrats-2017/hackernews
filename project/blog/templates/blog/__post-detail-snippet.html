@@ -14,11 +14,12 @@
 
 <p>Created By: {{ post.created_by }}</p>
 
-<ul>{% for comment in comments %}
+<ul class="comment-tree">
+	{% for comment in comments %}
 
-<li>
-	{% get_comment_detail comment %}
-	
-</li>
+		<li>
+			{% get_comment_detail comment %}
+			
+		</li>
 	{% endfor %}
 </ul>

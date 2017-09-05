@@ -116,7 +116,8 @@ class DetailView(LoginRequiredMixin, View):
 		# comments = Comment.objects.filter(parent_id=post.id, parent_type=post_content_type)
 		context = {
 			'post': post,
-			'comments': comments
+			'comments': comments,
+			'comment_form':CommentForm()
 		}
 		return render(request, 'blog/detail.html', context)
 

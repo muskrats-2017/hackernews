@@ -1,6 +1,6 @@
 {% extends "blog/_base.html" %}
 {% load blog_extras %}
-
+{% load staticfiles %}
 
 
 
@@ -29,3 +29,18 @@
 	{% post_detail post comments %}
 
 {% endblock main %}
+{% block footer %}
+	<script src="{% static 'blog/jquery.django-csrf.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/main.js' %}"></script>
+	<script type="text/template" id="comment-reply-template">
+	    <form method="POST">
+	        
+	        {{ comment_form }}
+	                
+	        {% csrf_token %}
+	        
+	        <input type="submit" value="Create">
+
+	    </form>			
+	</script>  
+{%endblock footer %}
