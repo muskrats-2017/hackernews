@@ -6,9 +6,9 @@
 	{{comment.name}}
 	<a href="{% url 'blog:update-comment' pk=comment.parent_id comment_pk=comment.id %}">Update Comment</a> <br>
 	<a href="{% url 'blog:delete-comment' pk=comment.parent_id comment_pk=comment.id %}">Delete Comment</a> <br>
-	<a href="{% url 'blog:reply-view' comment_pk=comment.id %}">Reply Comment</a>
-
+	<a href="{% url 'blog:reply-view' comment_pk=comment.id %}" class="comment-reply-anchor">Reply Comment</a>
 	
+	<div class="comment-form-container"></div>
 	
 	<ul>
 		{% for comment in comments %}
