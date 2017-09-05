@@ -24,7 +24,6 @@ var commentFormSubmission = function commentFormSubmission(event){
 		//console.log($form.serialize())
 		var $commentList = $this.siblings("ul");
 		//console.log($this.siblings("ul"))
-		$form[0].reset();
 		$.ajax({
 			url: $form.attr("action"),
 			method: 'POST',
@@ -38,7 +37,8 @@ var commentFormSubmission = function commentFormSubmission(event){
 
 			},
 			error: function(jqXHR, textStatus, errorThrown){
-				console.log(arguments)
+				console.log(arguments);
+				$form.prepend(jqXHR.responseText);
 			}
 		});	
 };

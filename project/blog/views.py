@@ -280,11 +280,10 @@ class CreateReplyView(LoginRequiredMixin, View):
 			response = self.get_response(request, context)
 			return response or redirect(self.success_url)
 		else:
-			print(dir(comment_form))
-			print(comment_form.errors)
-			#print(comment_form.as_p())
+
 			if request.is_ajax():
-				return HttpResponse(comment_form.errors, status=400)
+				
+				return HttpResponse(comment_form.errors.as_ul(), status=422)
 			context = {
 				'comment_form': comment_form,
 				'comment': obj
