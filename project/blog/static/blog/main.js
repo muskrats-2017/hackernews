@@ -21,8 +21,9 @@ var commentFormSubmission = function commentFormSubmission(event){
 		event.preventDefault();
 		var $this = $(this);
 		var $form = $this.find("form");
-		console.log($form.serialize())
-
+		//console.log($form.serialize())
+		var $commentList = $this.siblings("ul");
+		//console.log($this.siblings("ul"))
 		$.ajax({
 			url: $form.attr("action"),
 			method: 'POST',
@@ -32,7 +33,12 @@ var commentFormSubmission = function commentFormSubmission(event){
 				$form[0].reset();
 				// $say_res.prepend('<br>'+data['said']+' | ' +data['say']);
 
-				$say_res.html(data);
+				$commentList.append("<li>" + data + "</li>");
+
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				console.log(arguments);
+				$form.prepend(jqXHR.responseText);
 			}
 		});	
 };
@@ -66,6 +72,7 @@ $(document).ready(function(){
 
 	var $formContainer = $('.comment-form-container');
 	$formContainer.on("submit", commentFormSubmission);
+
 
 });
 
