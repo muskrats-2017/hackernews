@@ -41,10 +41,11 @@ class Comment(models.Model):
 	user = models.ForeignKey(User)
 	
 
-
+	is_hidden = models.BooleanField(default=False)
 	parent_id = models.PositiveIntegerField()
 	parent_type = models.ForeignKey(ContentType)
 	parent = GenericForeignKey('parent_type','parent_id')
+
 
 
 	comment_set = GenericRelation(

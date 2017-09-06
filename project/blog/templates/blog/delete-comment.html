@@ -16,7 +16,7 @@
 {% endblock header %}
 
 {% block main %}
-    <form action="{% url 'blog:delete-comment' pk=post.id comment_pk=comment.id %}" method="POST">
+    <form action="{% url 'blog:delete-comment' comment_pk=comment.id %}" method="POST">
         
                 
         {% csrf_token %}

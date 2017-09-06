@@ -16,7 +16,7 @@
 {% endblock header %}
 
 {% block main %}
-    <form action="{% url 'blog:update-comment' comment_pk=comment.id pk=post.id %}" method="POST">
+    <form action="{% url 'blog:update-comment' comment_pk=comment.id %}" method="POST">
         
         {{ update_comment_form }}
                 

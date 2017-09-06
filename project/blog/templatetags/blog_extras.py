@@ -22,3 +22,8 @@ def get_comment_detail(comment):
 
 	}
 
+@register.inclusion_tag('blog/__comment-snippet.html')
+def get_comment(comment):
+	return { "comment": comment }
+	
+
