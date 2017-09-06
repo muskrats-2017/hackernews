@@ -1,5 +1,5 @@
-<a href="{% url 'blog:update' pk=post.id %}">| Update Post</a>
-<a href="{% url 'blog:delete' pk=post.id %}">| Delete Post</a>
+<a href="{% url 'blog:update' pk=post.id %}" class="post-update-anchor">| Update</a>
+<a href="{% url 'blog:delete' pk=post.id %}" class="post-delete-anchor">| Delete Post</a>
 
 <a href="{% url 'blog:create-comment' pk=post.id %}" class="comment-create-anchor btn btn-success">Create Comment</a>
 

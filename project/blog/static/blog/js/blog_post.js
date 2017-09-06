@@ -1,7 +1,6 @@
 'use strict';
-//Code taken from Billy's demo on Friday  
-//with attempts to reformat for Hackernews
 
+//TODO: REMOVE CREATE AJAX FUNCTION
 var createAJAXForm = function createAJAXForm(options){
 	options = options || {};
 	var self = {};
@@ -28,14 +27,22 @@ var createAJAXForm = function createAJAXForm(options){
 };
 
 $(document).ready(function(){
-	var $commentTree, deleteCommentForm, createCommentForm, updateCommentForm;
-	
-	$commentTree = $('.comment-tree');
 
+
+
+	var 
+		$postDetail, $postFormContainer, createCommentForm, 
+		$postUpdate, $postUpdateContainer, updatePostForm;
+
+	
+	$postDetail = $('div.post');
+
+	$postFormContainer = $('div.post-form-container');
+	
 	createCommentForm = createAJAXForm({
 		"getForm": function(action){
 			var 
-				template = $("#comment-reply-template").html(),
+				template = $("#comment-create-template").html(),
 				$el = $(template);
 			
 			if (action) {
@@ -45,23 +52,23 @@ $(document).ready(function(){
 		}
 	});
 
-	$commentTree.on("click", "a.comment-reply-anchor", function(event){
+	$postDetail.on("click", "a.comment-create-anchor", function(event){
 		event.preventDefault();
 		var $this = $(this);
-		var $commentFormContainer = $this.parent().siblings(".comment-form-container");
+		var $commentFormContainer = $this.parent().siblings(".post-form-container");
 		var $form = createCommentForm.getForm($this.attr("href"));
 
 		$commentFormContainer.html($form);
 	});
 
-	$commentTree.on("submit", ".comment-form-container form.comment-create-form", function(event){
+	$postFormContainer.on("submit", "form.comment-create-form", function(event){
 		event.preventDefault();
 		var $form = $(this);
 		
 		createCommentForm.onSubmit(
 			$form, 
 			function(data){
-				var commentFormContainer = $form.parents(".comment-form-container");
+				var commentFormContainer = $form.parents(".post-form-container");
 				commentFormContainer.empty();
 				commentFormContainer.siblings("ul").append("<li>" + data + "</li>");
 			}, 
@@ -71,18 +78,22 @@ $(document).ready(function(){
 		);
 	});
 
-	updateCommentForm = createAJAXForm({
+	$postDetail = $("div.post");
+
+	$postFormContainer = $('div.post-form-container');
+	
+	updatePostForm = createAJAXForm({
 		"getForm": function(action){
 			var 
-				template = $("#comment-update-template").html(),
+				template = $("#post-update-template").html(),
 				$el = $(template);
 
 			$.ajax({
 				url: action,
 				method: 'GET',
 				success: function(data){
-					$el.attr("action", action);
 					$el.find(".form-inputs").html(data);
+					$el.attr("action", action);
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					$el.find("div.error-display").html(jqXHR.responseText);
@@ -92,48 +103,31 @@ $(document).ready(function(){
 			return $el;
 		}
 	});
-
-	$commentTree.on("click", "a.comment-update-anchor", function(event){
+	
+	$postDetail.on("click", "a.post-update-anchor", function(event){
 		event.preventDefault();
 		var $this = $(this);
-		var $commentFormContainer = $this.parent().siblings(".comment-form-container");
+		var $postFormContainer = $this.parent().siblings(".post-form-container");
 		
-		var $form = updateCommentForm.getForm($this.attr("href"));
+		var $form = updatePostForm.getForm($this.attr("href"));
 		
-		$commentFormContainer.html($form);
+		$postFormContainer.html($form);
 	});
 
-	$commentTree.on("submit", ".comment-form-container form.comment-update-form", function(event){
+	$postFormContainer.on("submit", "form.post-update-form", function(event){
 		event.preventDefault();
 		var $form = $(this);
-		updateCommentForm.onSubmit(
+		console.log("hiiiiiiiiii")
+		updatePostForm.onSubmit(
 			$form, 
 			function(data){
-				var commentFormContainer = $form.parents(".comment-form-container");
-				commentFormContainer.empty();
-				commentFormContainer.siblings("div.comment").html(data);
+				var postFormContainer = $form.parents(".post-form-container");
+				postFormContainer.empty();
+				postFormContainer.siblings("div.post").html(data);
 			}, function(jqXHR, textStatus, errorThrown){
 				$form.find("div.error-display").html(jqXHR.responseText);
 			}
 		);
-	});
-	
-	deleteCommentForm = createAJAXForm();
-
-	$commentTree.on("submit", ".comment form.comment-delete-form", function(event){
-		event.preventDefault();
-		var $form = $(this);
-		deleteCommentForm.onSubmit(
-			$form,
-			function(data){
-				var $comment = $form.parents("div.comment");
-				$comment.empty();
-				$comment.html(data);
-			}, 
-			function(jqXHR, textStatus, errorThrown){
-				$form.find("div.error-display").html(jqXHR.responseText);
-			}
-		);
-	});
-
+	});		
 });
+

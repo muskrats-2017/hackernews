@@ -23,8 +23,8 @@
 {% endblock main %}
 {% block footer %}
 	<script src="{% static 'blog/js/jquery.django-csrf.js' %}"></script>
-	<script type="text/javascript" src="{% static 'blog/js/main.refactor.js' %}"></script>
-	<script type="text/javascript" src="{% static 'blog/js/notmain.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/blog_comment.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/blog_post.js' %}"></script>
 	
 	<script type="text/template" id="comment-reply-template">
 		<form method="POST" class="comment-create-form">
@@ -69,5 +69,18 @@
 			<input type="submit" value="Create">
 
 		</form>
-	</script>  
+	</script>
+
+	<script type="text/template" id="post-update-template">	
+		<form method="POST" class="post-update-form">
+			<div class="error-display"></div>
+			
+			<div class="form-inputs"></div>
+			
+			{% csrf_token %}
+			
+			<input type="submit" value="Update">
+
+		</form>
+	</script>	  
 {%endblock footer %}
