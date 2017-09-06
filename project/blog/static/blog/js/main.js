@@ -3,145 +3,149 @@
 //with attempts to reformat for Hackernews
 
 
-var clickReplyCommentTree = function clickReplyCommentTree(event){
-	event.preventDefault();
-	//console.log(this)
-	var $this = $(this);
-	var template = $("#comment-reply-template").html();
-	var $commentForm = $this.parent().siblings(".comment-form-container");
-	$commentForm.html(template);
-	var form = $commentForm.find("form");
-	var action = $this.attr("href");
-	form.attr("action", action);
-	//console.log($this.attr("href"))
-	//console.log(commentForm);
-};
+var createForm = function createForm(options){
+	var self = {};
 
-var clickUpdateCommentTree = function clickUpdateCommentTree(event){
-	event.preventDefault();
-	//console.log(this)
-	var $this = $(this);
-	var template = $("#comment-update-template").html();
-	var $commentFormContainer = $this.parent().siblings(".comment-form-container");
-	var $form = $(template);
-	$commentFormContainer.html($form);
-	
-	
+	self.getTemplate = options.getTemplate || function(){};
 
+	self.onSubmit = options.onSubmit || function(){};
 
-	$.ajax({
-		url: $this.attr("href"),
-		method: 'GET',
-		success: function(data){
-			
-			$form.find(".form-inputs").html(data);			
-			
-			var action = $this.attr("href");
-			$form.attr("action", action);
+	self.onSuccess = options.onSuccess || function(){};
 
-		},
-		error: function(jqXHR, textStatus, errorThrown){
-			$form.find("div.error-display").html(jqXHR.responseText);
-			
-		}
-	});	
-	
+	self.onError = options.onError || function(){};
 
-};
-
-var createCommentFormSubmission = function createCommentFormSubmission(event){
-	
-	event.preventDefault();
-	var $form = $(this);
-	var $formContainer = $form.parents("div.comment-form-container");
-	//console.log($form.serialize())
-	var $commentList = $formContainer.siblings("ul");
-	//console.log($this.siblings("ul"))
-	
-	$.ajax({
-		url: $form.attr("action"),
-		method: 'POST',
-		data: $form.serialize(),
-		success: function(data){
-			
-			$formContainer.empty();
-			// $say_res.prepend('<br>'+data['said']+' | ' +data['say']);
-
-			$commentList.append("<li>" + data + "</li>");
-
-		},
-		error: function(jqXHR, textStatus, errorThrown){
-			console.log(arguments);
-			$form.find("div.error-display").html(jqXHR.responseText);
-		}
-	});	
-};
-
-var updateCommentFormSubmission = function updateCommentFormSubmission(event){
-	
-	event.preventDefault();
-	var $form = $(this);
-	var $formContainer = $form.parents("div.comment-form-container");
-	//console.log($form.serialize())
-	var $comment = $formContainer.siblings("div.comment");
-	//console.log($this.siblings("ul"))
-	
-	$.ajax({
-		url: $form.attr("action"),
-		method: 'POST',
-		data: $form.serialize(),
-		success: function(data){
-			
-			$formContainer.empty();
-			
-			$comment.html(data);
-
-		},
-		error: function(jqXHR, textStatus, errorThrown){
-			console.log(arguments);
-			$form.find("div.error-display").html(jqXHR.responseText);
-		}
-	});	
-};
-
-var deleteCommentFormSubmission = function deleteCommentFormSubmission(event){
-	
-	event.preventDefault();
-	console.log(this);
-	var $form = $(this);
-	var $comment = $form.parents("div.comment");
-	
-	$.ajax({
-		url: $form.attr("action"),
-		method: 'POST',
-		data: $form.serialize(),
-		success: function(data){
-			
-			$comment.empty();
-			
-			$comment.html(data);
-
-		},
-		error: function(jqXHR, textStatus, errorThrown){
-			console.log(arguments);
-			$form.find("div.error-display").html(jqXHR.responseText);
-		}
-	});	
+	return self;
 };
 
 $(document).ready(function(){
 
 	var $commentTree = $('.comment-tree');
 
-	$commentTree.on("click", "a.comment-reply-anchor", clickReplyCommentTree);
-	$commentTree.on("click", "a.comment-update-anchor", clickUpdateCommentTree);
+	var createCommentForm = createForm({
+		"getTemplate": function($target, action){
+			var 
+				template = $("#comment-reply-template").html();
+			
+			this.$target = $target;
+			this.$el = $(template);
+			this.$el.attr("action", action);
+			$target.html(this.$el);
+		},
+		"onSubmit": function($form){
+			var self = this;
+			$form = $form || self.$el;
+			$.ajax({
+				url: $form.attr("action"),
+				method: 'POST',
+				data: $form.serialize(),
+				success: self.onSubmit,
+				error: self.onError
+			});
+		},
+		"onSuccess": function(data){
+			this.$el = null;
+			this.$target.empty();
+			this.$target.siblings("ul").append("<li>" + data + "</li>");
+		},
+		"onError": function(jqXHR, textStatus, errorThrown){
+			this.$el.find("div.error-display").html(jqXHR.responseText);
+		}
+	});
+
+	$commentTree.on("click", "a.comment-reply-anchor", function(event){
+		var $this = $(this);
+		var $commentFormContainer = $this.parent().siblings(".comment-form-container");
+		createCommentForm.getTemplate($commentFormContainer, $this.attr("href"));
+	});
+
+	$commentTree.on("submit", ".comment-form-container form.comment-create-form", function(event){
+		event.preventDefault();
+		createCommentForm.onSubmit($(this));
+	});
+
+	var updateCommentForm = createForm({
+		"getTemplate": function($target, action){
+			var 
+				template = $("#comment-update-template").html(),
+				self = this;
+
+			self.$target = $target;
+			self.$el = $(template);
+			self.$target.html(self.$el);
+
+			
+			$.ajax({
+				url: action,
+				method: 'GET',
+				success: function(data){
+					self.$el.attr("action", action);
+					self.$el.find(".form-inputs").html(data);			
+					self.$el.attr("action", action);
+				},
+				error: function(jqXHR, textStatus, errorThrown){
+					self.$el.find("div.error-display").html(jqXHR.responseText);				
+				}
+			});
+		},
+		"onSubmit": function($form){
+			var self = this;
+			$form = $form || self.$el;
+			$.ajax({
+				url: $form.attr("action"),
+				method: 'POST',
+				data: $form.serialize(),
+				success: self.onSubmit,
+				error: self.onError
+			});
+		},
+		"onSuccess": function(data){
+			this.$el = null;
+			this.$target.empty();
+			this.$target.siblings("div.comment").html(data);
+		},
+		"onError": function(jqXHR, textStatus, errorThrown){
+			this.$el.find("div.error-display").html(jqXHR.responseText);
+		}
+	});
+
+	$commentTree.on("click", "a.comment-update-anchor", function(event){
+		var $this = $(this);
+		var $commentFormContainer = $this.parent().siblings(".comment-form-container");
+		updateCommentForm.getTemplate($commentFormContainer, $this.attr("href"));
+	});
+
+	$commentTree.on("submit", ".comment-form-container form.comment-update-form", function(event){
+		event.preventDefault();
+		updateCommentForm.onSubmit($(this));
+	});
 	
-	var $formContainer = $('.comment-form-container');
-	$commentTree.on("submit", ".comment-form-container form.comment-create-form", createCommentFormSubmission);
-	$commentTree.on("submit", ".comment-form-container form.comment-update-form", updateCommentFormSubmission);
-	$commentTree.on("submit", ".comment form.comment-delete-form", deleteCommentFormSubmission);
+	var deleteCommentForm = createForm({
+		"onSubmit": function($form){
+			var self = this;
+			var $form = $(this);
+			self.$comment = $form.parents("div.comment");
+	
+			$.ajax({
+				url: $form.attr("action"),
+				method: 'POST',
+				data: $form.serialize(),
+				success: self.onSuccess,
+				error: self.onError
+			});
+		},
+		"onSuccess": function(data){
+			this.$comment.empty();
+			this.$comment.html(data);
+		},
+		"onError": function(jqXHR, textStatus, errorThrown){
+			this.$el.find("div.error-display").html(jqXHR.responseText);
+		}
+	});
 
-
+	$commentTree.on("submit", ".comment form.comment-delete-form", function(event){
+		event.preventDefault();
+		deleteCommentForm.onSubmit($(this));
+	});
 
 });
 
