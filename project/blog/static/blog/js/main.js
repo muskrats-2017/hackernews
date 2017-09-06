@@ -73,7 +73,6 @@ $(document).ready(function(){
 			self.$el = $(template);
 			self.$target.html(self.$el);
 
-			
 			$.ajax({
 				url: action,
 				method: 'GET',
