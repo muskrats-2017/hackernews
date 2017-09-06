@@ -9,6 +9,13 @@ def post_detail(post, comments):
         "comments": comments
     }
 
+@register.inclusion_tag('blog/__post-snippet.html')
+def get_post(post):
+    return {
+        "post": post
+    }
+
+
 @register.inclusion_tag('blog/__comment-detail-snippet.html')
 def get_comment_detail(comment):
 	if comment.comment_set.exists():

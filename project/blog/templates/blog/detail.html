@@ -14,14 +14,6 @@
 {% block header %}
 	<h1>Detail Blog Post</h1>
 	{{ block.super }}
-
-	 <a href="{% url 'blog:update' pk=post.id %}">| Update Post</a>
-	 <a href="{% url 'blog:delete' pk=post.id %}">| Delete Post</a>
-
-
-	
-	
-
 {% endblock header %}
 	
 {% block main %}
@@ -32,6 +24,8 @@
 {% block footer %}
 	<script src="{% static 'blog/js/jquery.django-csrf.js' %}"></script>
 	<script type="text/javascript" src="{% static 'blog/js/main.refactor.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/notmain.js' %}"></script>
+	
 	<script type="text/template" id="comment-reply-template">
 		<form method="POST" class="comment-create-form">
 			<div class="error-display"></div>
@@ -47,6 +41,7 @@
 
 		</form>			
 	</script>
+	
 	<script type="text/template" id="comment-update-template">
 		<form method="POST" class="comment-update-form">
 			<div class="error-display"></div>
@@ -58,5 +53,21 @@
 			<input type="submit" value="Update">
 
 		</form>			
-	</script>    
+	</script>
+	
+	<script type="text/template" id="comment-create-template">	
+		<form method="POST" class="comment-create-form">
+			<div class="error-display"></div>
+			<div class="form-inputs">
+				
+				{{ comment_form }}
+					
+			</div>
+			
+			{% csrf_token %}
+			
+			<input type="submit" value="Create">
+
+		</form>
+	</script>  
 {%endblock footer %}

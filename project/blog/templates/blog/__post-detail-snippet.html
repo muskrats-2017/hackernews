@@ -1,18 +1,11 @@
 {% load blog_extras %}
 
-<a href="{% url 'blog:create-comment' pk=post.id %}">
-	Create Comment
-</a>
 
-<div id='title'>
-	<h2>{{ post.title }}</h2>
+<div class="post">
+	{% get_post post %}
 </div>
 
-<div id='content'>
-	<p>{{post.content}}</p>
-</div>
-
-<p>Created By: {{ post.created_by }}</p>
+<div class="post-form-container"></div>
 
 <ul class="comment-tree">
 	{% for comment in comments %}

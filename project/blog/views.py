@@ -146,13 +146,26 @@ class CreateCommentView(LoginRequiredMixin, View):
 			comment.user = request.user
 			comment.parent = post
 			comment.save()
-			return redirect(self.success_url)
+			context = {
+				'comment': comment
+			}
+			response = self.get_response(request, comment_form, context)
+			return response or redirect(self.success_url)
 		
 		else:
 			context = {
 				'comment_form': comment_form
 			}
-			return render(request, self.template_name, context)
+			response = self.get_response(request, comment_form, context)
+			return response or render(request, self.template_name, context)
+
+	def get_response(self, request, form, context=None):
+		if request.is_ajax():
+			if form.is_valid():
+				return render(request, "blog/__comment-snippet.html", context)
+
+			else:
+				return HttpResponse(form.errors.as_ul(), status=422)
 
 class UpdateCommentView(LoginRequiredMixin, View):
 	
@@ -294,8 +307,7 @@ class CreateReplyView(LoginRequiredMixin, View):
 			comment.parent = obj
 			comment.save()
 			context = {
-				'comment': comment,
-				'comments' : []
+				'comment': comment
 			}
 			response = self.get_response(request, comment_form, context)
 			return response or redirect(self.success_url)
