@@ -5,17 +5,44 @@
 
 var clickReplyCommentTree = function clickReplyCommentTree(event){
 	event.preventDefault();
-	//console.log(this)
 	var $this = $(this);
 	var template = $("#comment-reply-template").html();
-	var $commentForm = $this.parent().siblings(".comment-form-container");
-	$commentForm.html(template);
-	var form = $commentForm.find("form");
+	var $commentFormContainer = $this.parent().siblings(".comment-form-container");
+	$commentFormContainer.html(template);
+	var form = $commentFormContainer.find("form");
 	var action = $this.attr("href");
 	form.attr("action", action);
-	//console.log($this.attr("href"))
-	//console.log(commentForm);
 };
+
+
+var createCommentFormSubmission = function createCommentFormSubmission(event){
+	
+	event.preventDefault();
+	var $form = $(this);
+	var $formContainer = $form.parents("div.comment-form-container");
+	//console.log($form.serialize())
+	var $commentList = $formContainer.siblings("ul");
+	//console.log($this.siblings("ul"))
+	
+	$.ajax({
+		url: $form.attr("action"),
+		method: 'POST',
+		data: $form.serialize(),
+		success: function(data){
+			
+			$formContainer.empty();
+			// $say_res.prepend('<br>'+data['said']+' | ' +data['say']);
+
+			$commentList.append("<li>" + data + "</li>");
+
+		},
+		error: function(jqXHR, textStatus, errorThrown){
+			console.log(arguments);
+			$form.find("div.error-display").html(jqXHR.responseText);
+		}
+	});	
+};
+
 
 var clickUpdateCommentTree = function clickUpdateCommentTree(event){
 	event.preventDefault();
@@ -49,33 +76,6 @@ var clickUpdateCommentTree = function clickUpdateCommentTree(event){
 
 };
 
-var createCommentFormSubmission = function createCommentFormSubmission(event){
-	
-	event.preventDefault();
-	var $form = $(this);
-	var $formContainer = $form.parents("div.comment-form-container");
-	//console.log($form.serialize())
-	var $commentList = $formContainer.siblings("ul");
-	//console.log($this.siblings("ul"))
-	
-	$.ajax({
-		url: $form.attr("action"),
-		method: 'POST',
-		data: $form.serialize(),
-		success: function(data){
-			
-			$formContainer.empty();
-			// $say_res.prepend('<br>'+data['said']+' | ' +data['say']);
-
-			$commentList.append("<li>" + data + "</li>");
-
-		},
-		error: function(jqXHR, textStatus, errorThrown){
-			console.log(arguments);
-			$form.find("div.error-display").html(jqXHR.responseText);
-		}
-	});	
-};
 
 var updateCommentFormSubmission = function updateCommentFormSubmission(event){
 	
