@@ -1,14 +1,18 @@
 
 <p>{{comment.user.username}}: {% if not comment.is_hidden %}{{ comment.content }}{% endif %}</p>
-{% if not comment.is_hidden %}
-	<a href="{% url 'blog:update-comment' comment_pk=comment.id %}" class="comment-update-anchor btn btn-warning">Update</a>
+<div class="btn-group" role="group" aria-label="...">
+	{% if not comment.is_hidden %}
+		<a href="{% url 'blog:update-comment' comment_pk=comment.id %}" class="comment-update-anchor btn btn-warning">Update</a>
 
-	<form class="comment-delete-form form-horizontal" action="{% url 'blog:delete-comment' comment_pk=comment.id %}" method="POST">
-		<div class="error-display"></div>
-		{% csrf_token %}
-		<button type="submit" class="btn btn-danger">Remove</button>
-	</form>
+		<div class="btn-group" role="group">
+			<form class="comment-delete-form form-horizontal" action="{% url 'blog:delete-comment' comment_pk=comment.id %}" method="POST">
+				<div class="error-display"></div>
+				{% csrf_token %}
+				<button type="submit" class="btn btn-danger">Remove</button>
+			</form>
+		</div>
 
-{% endif %}
-<a href="{% url 'blog:reply-view' comment_pk=comment.id %}" class="comment-reply-anchor btn btn-success">Reply</a>
+	{% endif %}
+	<a href="{% url 'blog:reply-view' comment_pk=comment.id %}" class="comment-reply-anchor btn btn-success">Reply</a>
+</div>
 	

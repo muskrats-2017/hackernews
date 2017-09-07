@@ -17,14 +17,15 @@
 {% endblock header %}
 	
 {% block main %}
-
-	{% post_detail post comments %}
+	<div class="post-detail">
+		{% post_detail post comments %}
+	</div>
 
 {% endblock main %}
 {% block footer %}
 	<script src="{% static 'blog/js/jquery.django-csrf.js' %}"></script>
-	<script type="text/javascript" src="{% static 'blog/js/blog_comment.js' %}"></script>
-	<script type="text/javascript" src="{% static 'blog/js/blog_post.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/components.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/components.main.js' %}"></script>
 	
 	<script type="text/template" id="comment-reply-template">
 		<form method="POST" class="comment-create-form">

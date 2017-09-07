@@ -7,10 +7,11 @@
 
 <div class="post-form-container"></div>
 
-<ul class="comment-tree">
+<h4>Comments</h4>
+<ul class="comment-tree list-group">
 	{% for comment in comments %}
 
-		<li>
+		<li class="list-group-item">
 			{% get_comment_detail comment %}
 			
 		</li>

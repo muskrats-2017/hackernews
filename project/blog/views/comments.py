@@ -55,7 +55,7 @@ class CreateCommentView(LoginRequiredMixin, View):
 	def get_response(self, request, form, context=None):
 		if request.is_ajax():
 			if form.is_valid():
-				return render(request, "blog/__comment-snippet.html", context)
+				return render(request, "blog/__comment-detail-snippet.html", context)
 
 			else:
 				return HttpResponse(form.errors.as_ul(), status=422)

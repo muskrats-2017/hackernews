@@ -1,15 +1,30 @@
-<a href="{% url 'blog:update' pk=post.id %}" class="post-update-anchor">| Update</a>
-<a href="{% url 'blog:delete' pk=post.id %}" class="post-delete-anchor">| Delete Post</a>
-
-<a href="{% url 'blog:create-comment' pk=post.id %}" class="comment-create-anchor btn btn-success">Create Comment</a>
-
-
 <div id='title'>
 	<h2>{{ post.title }}</h2>
 </div>
 
 <div id='content'>
-	<p>{{post.content}}</p>
+	{% if post.is_hidden %}
+		<p>This content has been removed.</p>
+	{% else %}
+		<p>{{post.content}}</p>
+	{% endif %}
+	<p>Created By: {{ post.created_by }}</p>
 </div>
 
-<p>Created By: {{ post.created_by }}</p>
+
+<div class="btn-group" role="group" aria-label="...">
+	<a href="{% url 'blog:update' pk=post.id %}" class="post-update-anchor btn btn-warning">
+		Update
+	</a>
+	<div class="btn-group" role="group">
+		<form class="post-delete-form form-horizontal" action="{% url 'blog:delete' pk=post.id %}" method="POST">
+			<div class="error-display"></div>
+			{% csrf_token %}
+			<button type="submit" class="btn btn-danger">Remove</button>
+		</form>
+	</div>
+
+	<a href="{% url 'blog:create-comment' pk=post.id %}" class="comment-create-anchor btn btn-success">
+		Comment
+	</a>
+</div>

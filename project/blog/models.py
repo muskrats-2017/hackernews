@@ -17,6 +17,8 @@ class Post(models.Model):
 	updated_at = models.DateTimeField(default=timezone.now)
 	created_by = models.ForeignKey(User)
 
+	is_hidden = models.BooleanField(default=False)
+
 	comment_set = GenericRelation(
 		'blog.Comment', 
 		object_id_field='parent_id', 
