@@ -100,17 +100,34 @@ class UpdateBlogView(LoginRequiredMixin, View):
 class DeleteBlogView(LoginRequiredMixin, View):
 
 	def get(self, request, pk):
-		post = get_object_or_404(Post, id=pk, created_by=request.user)
+		user_check = Q(created_by=request.user) if not request.user.is_staff else Q()
+
+		post = get_object_or_404(Post, user_check, id=pk)
 		context = {'post': post}
 		return render(request, 'blog/delete.html', context)
 	
 
 	def post(self, request, pk):
-		post = get_object_or_404(Post, id=pk, created_by=request.user)
+		user_check = Q(created_by=request.user) if not request.user.is_staff else Q()
 		
-		post.delete()	
-		return redirect('blog:list')
+		post = get_object_or_404(Post, user_check, id=pk)
+		
+		post.is_hidden = True
 
+		post.save()
+		
+		response = self.get_response(request, {
+			"post": post
+		})
+
+		return response or redirect('blog:list')
+
+	def get_response(self, request, context=None):
+		if request.is_ajax():
+			return render(request, "blog/__post-snippet.html", context)
+
+
+		
 class DetailView(LoginRequiredMixin, View):
 
 	def get(self, request, pk):

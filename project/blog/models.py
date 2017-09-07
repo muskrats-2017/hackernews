@@ -37,6 +37,17 @@ class Post(models.Model):
 		self.full_clean()
 		super().save(*args, **kwargs)
 
+	def to_json(self):
+		return dict(
+			id=self.id,
+			title=self.title,
+			slug=self.slug,
+			content=self.content,
+			created_at=self.created_at,
+			updated_at=self.updated_at,
+			created_by=self.created_by.username
+		)
+
 class Comment(models.Model):
 	content = models.TextField()
 	timestamp = models.DateTimeField(default=timezone.now)
@@ -57,11 +68,17 @@ class Comment(models.Model):
 		related_query_name='comments'
 	)
 
-# class PostVote(models.Model):
-# 	post = models.ForeignKey(Post)
-# 	user = models.ForeignKey(User)
+	def to_json(self):
+		return dict(
+			id=self.id,
+			content=self.content,
+			timestamp=self.timestamp,
+			username=self.user.username,
+			is_hidden=self.is_hidden,
+			parent_id=self.parent_id,
+			parent_type=self.parent_type.name
+		)
 
-# class CommentVote(models.Model):
-# 	user = models.ForeignKey(User)
-# 	comment = models.ForeignKey(Comment)
+
+
 

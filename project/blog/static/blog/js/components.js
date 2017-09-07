@@ -169,11 +169,13 @@ var mountPostCreateCommentComponent = function mountPostCreateCommentComponent($
 		createCommentForm.onSubmit(
 			$form, 
 			function(data){
+				console.log(arguments);
 				var commentFormContainer = $form.parents(".post-form-container");
 				commentFormContainer.empty();
 				commentFormContainer.siblings("ul").append("<li>" + data + "</li>");
 			}, 
 			function(jqXHR, textStatus, errorThrown){
+				console.log(arguments);
 				$form.find("div.error-display").html(jqXHR.responseText);
 			}
 		);
@@ -233,17 +235,17 @@ var mountPostUpdateComponent = function mountPostUpdateComponent($el){
 
 
 var mountPostDeleteComponent = function mountPostDeleteComponent($el){	
-	var deleteCommentForm = createAJAXForm();
+	var deletePostForm = createAJAXForm();
 
 	$el.on("submit", ".post form.post-delete-form", function(event){
 		event.preventDefault();
 		var $form = $(this);
-		deleteCommentForm.onSubmit(
+		deletePostForm.onSubmit(
 			$form,
 			function(data){
-				var $comment = $form.parents("div.post");
-				$comment.empty();
-				$comment.html(data);
+				var $post = $form.parents("div.post");
+				$post.empty();
+				$post.html(data);
 			}, 
 			function(jqXHR, textStatus, errorThrown){
 				$form.find("div.error-display").html(jqXHR.responseText);

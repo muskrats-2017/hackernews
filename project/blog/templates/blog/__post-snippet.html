@@ -13,16 +13,19 @@
 
 
 <div class="btn-group" role="group" aria-label="...">
-	<a href="{% url 'blog:update' pk=post.id %}" class="post-update-anchor btn btn-warning">
-		Update
-	</a>
-	<div class="btn-group" role="group">
-		<form class="post-delete-form form-horizontal" action="{% url 'blog:delete' pk=post.id %}" method="POST">
-			<div class="error-display"></div>
-			{% csrf_token %}
-			<button type="submit" class="btn btn-danger">Remove</button>
-		</form>
-	</div>
+	{% if not post.is_hidden %}
+		<a href="{% url 'blog:update' pk=post.id %}" class="post-update-anchor btn btn-warning">
+			Update
+			<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+		</a>
+		<div class="btn-group" role="group">
+			<form class="post-delete-form form-horizontal" action="{% url 'blog:delete' pk=post.id %}" method="POST">
+				<div class="error-display"></div>
+				{% csrf_token %}
+				<button type="submit" class="btn btn-danger">Remove</button>
+			</form>
+		</div>
+	{% endif %}
 
 	<a href="{% url 'blog:create-comment' pk=post.id %}" class="comment-create-anchor btn btn-success">
 		Comment

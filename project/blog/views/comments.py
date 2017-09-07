@@ -1,6 +1,6 @@
 import datetime
 from django.shortcuts import render, redirect, get_object_or_404	
-from django.http import HttpResponseNotAllowed, HttpResponse
+from django.http import HttpResponseNotAllowed, HttpResponse, JsonResponse
 from django.utils import timezone
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -40,7 +40,7 @@ class CreateCommentView(LoginRequiredMixin, View):
 			comment.parent = post
 			comment.save()
 			context = {
-				'comment': comment
+				'comment': comment.to_json()
 			}
 			response = self.get_response(request, comment_form, context)
 			return response or redirect(self.success_url)
@@ -55,7 +55,7 @@ class CreateCommentView(LoginRequiredMixin, View):
 	def get_response(self, request, form, context=None):
 		if request.is_ajax():
 			if form.is_valid():
-				return render(request, "blog/__comment-detail-snippet.html", context)
+				return JsonResponse(context)
 
 			else:
 				return HttpResponse(form.errors.as_ul(), status=422)
