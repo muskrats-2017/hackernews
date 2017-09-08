@@ -98,8 +98,9 @@ var mountCommentUpdateComponent = function mountCommentUpdateComponent($el){
 				url: action,
 				method: 'GET',
 				success: function(data){
+					var rendered = Mustache.render("{{#.}}{{{.}}}{{/.}}", Object.values(data));
 					$form.attr("action", action);
-					$form.find(".form-inputs").html(data);
+					$form.find(".form-inputs").html(rendered);
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					$form.find("div.error-display").html(jqXHR.responseText);
@@ -128,7 +129,9 @@ var mountCommentUpdateComponent = function mountCommentUpdateComponent($el){
 			function(data){
 				var commentFormContainer = $form.parents(".comment-form-container");
 				commentFormContainer.empty();
-				commentFormContainer.siblings("div.comment").html(data);
+				var template = $("#comment-detail-template"	).html();
+				var rendered = Mustache.render(template, data);
+				commentFormContainer.siblings("div.comment").html(rendered);
 			}
 		);
 	});
@@ -146,7 +149,9 @@ var mountCommentDeleteComponent = function mountCommentDeleteComponent($el){
 			function(data){
 				var $comment = $form.parents("div.comment");
 				$comment.empty();
-				$comment.html(data);
+				var template = $("#comment-detail-template"	).html();
+				var rendered = Mustache.render(template, data);
+				$comment.html(rendered);
 			}
 		);
 	});
@@ -260,7 +265,9 @@ var mountPostDeleteComponent = function mountPostDeleteComponent($el){
 			function(data){
 				var $post = $form.parents("div.post");
 				$post.empty();
-				$post.html(data);
+				var template = $("#post-template").html();
+				var rendered = Mustache.render(template, data);
+				$post.html(rendered);
 			}
 		);
 	});

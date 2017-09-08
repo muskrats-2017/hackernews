@@ -117,14 +117,14 @@ class DeleteBlogView(LoginRequiredMixin, View):
 		post.save()
 		
 		response = self.get_response(request, {
-			"post": post
+			"post": post.to_json()
 		})
 
 		return response or redirect('blog:list')
 
 	def get_response(self, request, context=None):
 		if request.is_ajax():
-			return render(request, "blog/__post-snippet.html", context)
+			return JsonResponse(context)
 
 
 		

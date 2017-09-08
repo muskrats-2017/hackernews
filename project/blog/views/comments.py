@@ -79,7 +79,7 @@ class UpdateCommentView(LoginRequiredMixin, View):
 		update_comment_form = CommentForm(instance=obj)
 
 		if request.is_ajax():
-			return HttpResponse(update_comment_form.as_p())
+			return JsonResponse(update_comment_form.as_json())
 		
 		context = {
 			'comment' : obj,
@@ -106,9 +106,9 @@ class UpdateCommentView(LoginRequiredMixin, View):
 		form = CommentForm(data, instance=obj)
 	
 		if form.is_valid():
-			form.save()
+			obj = form.save()
 			response = self.get_response(request, form, {
-				"comment": obj
+				"comment": obj.to_json()
 			})
 			return response or redirect('blog:list')
 		else: 
@@ -121,7 +121,7 @@ class UpdateCommentView(LoginRequiredMixin, View):
 
 	def get_response(self, request, form, context=None):
 		if request.is_ajax() and form.is_valid():
-			return render(request, "blog/__comment-snippet.html", context)
+			return JsonResponse(context)
 
 		elif request.is_ajax():
 			return JsonResponse(form.errors.as_json(), safe=False, status=422)
@@ -161,14 +161,14 @@ class DeleteCommentView(LoginRequiredMixin, View):
 		obj.is_hidden = True
 		obj.save()
 		response = self.get_response(request, {
-			"comment": obj
+			"comment": obj.to_json()
 		})
 		return response or redirect('blog:list')
 
 
 	def get_response(self, request, context=None):
 		if request.is_ajax():
-			return render(request, "blog/__comment-snippet.html", context)
+			return JsonResponse(context)
 
 
 
@@ -200,7 +200,7 @@ class CreateReplyView(LoginRequiredMixin, View):
 			comment.parent = obj
 			comment.save()
 			context = {
-				'comment': comment.to_json()
+				'comment': comment.as_json()
 			}
 			response = self.get_response(request, comment_form, context)
 			return response or redirect(self.success_url)

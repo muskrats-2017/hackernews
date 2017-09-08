@@ -42,10 +42,11 @@ class Post(models.Model):
 			id=self.id,
 			title=self.title,
 			slug=self.slug,
-			content=self.content,
+			content=self.content if not self.is_hidden else "",
 			created_at=self.created_at,
 			updated_at=self.updated_at,
-			created_by=self.created_by.username
+			created_by=self.created_by.username,
+			is_hidden=self.is_hidden
 		)
 
 class Comment(models.Model):
@@ -71,7 +72,7 @@ class Comment(models.Model):
 	def to_json(self):
 		return dict(
 			id=self.id,
-			content=self.content,
+			content=self.content if not self.is_hidden else "",
 			timestamp=self.timestamp,
 			username=self.user.username,
 			is_hidden=self.is_hidden,
