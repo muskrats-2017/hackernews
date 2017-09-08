@@ -4,6 +4,9 @@ var createAJAXForm = function createAJAXForm(options){
 
 	self.getForm = options.getForm || function(){};
 
+	self.errorTemplate = options.errorTemplate || $("#form-error-template").html();
+
+
 	self.onSubmit = options.onSubmit || function onSubmit($form, onSuccess, onError){
 		var self = this;
 
@@ -23,7 +26,6 @@ var createAJAXForm = function createAJAXForm(options){
 		return function(jqXHR, textStatus, errorThrown){
 			var 
 				rendered = '<p class="text-danger">' + textStatus + '</p>',
-				template = '<ul class="errorlist">{{#errors}}<li>{{field}}<ul class="errorlist">{{#errors}}<li>{{message}}</li>{{/errors}}</ul></li>{{/errors}}</ul>',
 				data = {"errors": []};
 			
 			if (jqXHR.responseJSON){
@@ -34,7 +36,7 @@ var createAJAXForm = function createAJAXForm(options){
 						"errors": value
 					});
 				});
-				rendered = Mustache.render(template, data);
+				rendered = Mustache.render(self.errorTemplate, data);
 			}
 			$form.find("div.error-display").html(rendered);
 		};

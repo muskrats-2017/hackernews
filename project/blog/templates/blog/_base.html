@@ -21,8 +21,15 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js"></script>
     </head>  
     <body>
-       {% block header %} {% endblock header %}
-       {% block main %} {% endblock main %}
-       {% block footer %} {% endblock footer %}
+        <header>
+            {% block header %}{% endblock header %}
+        </header> 
+        <main>
+            {% block main %} {% endblock main %}    
+        </main>
+        <footer>
+            {% block footer %} {% endblock footer %}    
+        </footer>
+        {% block scripts %} {% endblock scripts %}
     </body> 
 </html>

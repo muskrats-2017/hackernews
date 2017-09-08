@@ -20,7 +20,12 @@ var createAJAXForm = function createAJAXForm(options){
 
 	self.onSuccess = options.onSuccess || function(){};
 
-	self.onError = options.onError || function(){};
+	self.onError = options.onError || function onError($form){
+		function(jqXHR, textStatus, errorThrown){
+			$form.find("div.error-display").html(jqXHR.responseText);
+		};
+	};	
+
 
 	return self;
 };
