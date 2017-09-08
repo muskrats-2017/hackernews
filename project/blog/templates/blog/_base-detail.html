@@ -1,4 +1,5 @@
 {% extends "blog/_base.html" %}
+{% load staticfiles %}
 
 {% block scripts %}
 	<script src="{% static 'blog/js/jquery.django-csrf.js' %}"></script>
@@ -117,6 +118,47 @@
 				{{/errors}}
 			</ul>
 
+	</script>
+	{% endverbatim %}
+	{% verbatim %}
+	<script type="text/template" id="post-template">
+		<div id='title'>
+			<h2>{{ post.title }}</h2>
+		</div>
+
+		<div id='content'>
+			{{ #post.is_hidden }}
+				<p>This content has been removed.</p>
+			{{ /post.is_hidden }}
+			{{ ^post.is_hidden }}
+				<p>{{post.content}}</p>
+			{{ /post.is_hidden }}
+			<p>Created By: {{ post.created_by }}</p>
+		</div>
+
+
+		<div class="btn-group" role="group" aria-label="...">
+			{{ ^post.is_hidden }}
+				<a href="/blog/{{ post.id }}/update" class="post-update-anchor btn btn-warning">
+					Update
+					<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+				</a>
+				<div class="btn-group" role="group">
+					<form class="post-delete-form form-horizontal" action="/blog/{{ post.id }}/delete" method="POST">
+						<div class="error-display"></div>
+	{% endverbatim %}
+
+						{% csrf_token %}
+	{% verbatim %}					
+						<button type="submit" class="btn btn-danger">Remove</button>
+					</form>
+				</div>
+			{{ /post.is_hidden }}
+
+			<a href="/blog/{{ post.id }}/comments" class="comment-create-anchor btn btn-success">
+				Comment
+			</a>
+		</div>
 	</script>
 	{% endverbatim %}
 {%endblock scripts %}

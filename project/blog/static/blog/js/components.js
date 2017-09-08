@@ -10,7 +10,6 @@ var createAJAXForm = function createAJAXForm(options){
 	self.onSubmit = options.onSubmit || function onSubmit($form, onSuccess, onError){
 		var self = this;
 
-		$form[0].reset();
 		$.ajax({
 			url: $form.attr("action"),
 			method: $form.attr("method"),
@@ -209,7 +208,6 @@ var mountPostUpdateComponent = function mountPostUpdateComponent($el){
 				method: 'GET',
 				success: function(data){
 					var rendered = Mustache.render("{{#.}}{{{.}}}{{/.}}", Object.values(data));
-
 					$form.find(".form-inputs").html(rendered);
 					$form.attr("action", action);
 				},
@@ -241,7 +239,10 @@ var mountPostUpdateComponent = function mountPostUpdateComponent($el){
 			function(data){
 				var postFormContainer = $form.parents(".post-form-container");
 				postFormContainer.empty();
-				postFormContainer.siblings("div.post").html(data);
+				var template = $("#post-template").html();
+				var rendered = Mustache.render(template, data);				
+				postFormContainer.siblings("div.post").html(rendered);
+
 			}
 		);
 	});
