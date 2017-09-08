@@ -1,10 +1,13 @@
 {% extends "blog/_base.html" %}
 {% load staticfiles %}
+{% load pipeline %}
+
 
 {% block scripts %}
 	<script src="{% static 'blog/js/jquery.django-csrf.js' %}"></script>
-	<script type="text/javascript" src="{% static 'blog/js/components.js' %}"></script>
-	<script type="text/javascript" src="{% static 'blog/js/components.main.js' %}"></script>
+	
+	{% javascript 'base' %}
+	{% javascript 'components' %}
 	
 	<script type="text/template" id="comment-reply-template">
 		<form method="POST" class="comment-create-form">

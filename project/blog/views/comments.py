@@ -200,7 +200,7 @@ class CreateReplyView(LoginRequiredMixin, View):
 			comment.parent = obj
 			comment.save()
 			context = {
-				'comment': comment.as_json()
+				'comment': comment.to_json()
 			}
 			response = self.get_response(request, comment_form, context)
 			return response or redirect(self.success_url)
