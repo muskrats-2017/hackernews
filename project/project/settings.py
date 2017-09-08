@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'bootstrap3',
     'users',
     'blog',
+    'pipeline'
 ]
 
 MIDDLEWARE = [
@@ -121,6 +122,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 
 AUTH_USER_MODEL = 'auth.User'
@@ -131,3 +133,31 @@ LOGIN_REDIRECT = 'users:login'
 
 LOGIN_URL = 'users:login'
 
+
+PIPELINE = {
+    'JAVASCRIPT': {
+        'base': {
+            'source_filenames': (
+              'blog/js/app.base/*.js',
+            ),
+            'output_filename': 'js/base.js',
+
+        },
+        'components': {
+            'source_filenames': (
+              'blog/js/app.components/*.js',
+            ),
+            'output_filename': 'js/components.js',
+
+        }
+    }
+}
+
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'pipeline.finders.PipelineFinder',
+)
