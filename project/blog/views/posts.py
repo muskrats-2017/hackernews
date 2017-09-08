@@ -1,6 +1,6 @@
 import datetime
 from django.shortcuts import render, redirect, get_object_or_404	
-from django.http import HttpResponseNotAllowed, HttpResponse
+from django.http import HttpResponseNotAllowed, HttpResponse, JsonResponse
 from django.utils import timezone
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -63,7 +63,7 @@ class UpdateBlogView(LoginRequiredMixin, View):
 		update_post_form = BlogForm(instance=obj)
 
 		if request.is_ajax():
-			return HttpResponse(update_post_form.as_p())
+			return JsonResponse(update_post_form.as_json())
 
 		context = {
 			'post' : obj,
@@ -79,7 +79,7 @@ class UpdateBlogView(LoginRequiredMixin, View):
 		if form.is_valid():
 			form.save()
 			response = self.get_response(request, form, {
-				"post": obj
+				"post": obj.to_json()
 			})			
 			return response or redirect('blog:list')
 		else: 
@@ -92,10 +92,10 @@ class UpdateBlogView(LoginRequiredMixin, View):
 
 	def get_response(self, request, form, context=None):
 		if request.is_ajax() and form.is_valid():
-			return render(request, "blog/__post-snippet.html", context)
+			return JsonResponse(context)
 
 		elif request.is_ajax():
-			return HttpResponse(form.errors.as_ul(), status=422)			
+			return JsonResponse(form.errors.as_json(), safe=False, status=422)			
 
 class DeleteBlogView(LoginRequiredMixin, View):
 

@@ -83,5 +83,43 @@
 			<input type="submit" value="Update">
 
 		</form>
-	</script>	  
+	</script>
+
+
+	{% verbatim %}
+		<script type="text/template" id="comment-detail-template">
+			<div class='comment'>
+					<p>{{comment.username}}: {{ ^comment.is_hidden }}{{ comment.content }}{{ /comment.is_hidden }}</p>
+					<div class="btn-group" role="group" aria-label="...">
+						{{ ^comment.is_hidden }}
+							<a href="/blog/comments/{{comment.id}}/update" class="comment-update-anchor btn btn-warning">Update</a>
+
+							<div class="btn-group" role="group">
+								<form class="comment-delete-form form-horizontal" action="/blog/comments/{{comment.id}}/delete" method="POST">
+									<div class="error-display"></div>
+	{% endverbatim %}
+									{% csrf_token %}
+	{% verbatim %}
+								<button type="submit" class="btn btn-danger">Remove</button>
+							</form>
+						</div>
+
+					{{ /comment.is_hidden }}
+
+					<a href="/blog/comments/{{comment.id}}/reply" class="comment-reply-anchor btn btn-success">Reply</a>
+				</div>
+			</div>
+			<div class="comment-form-container"></div>
+
+			<ul class="list-group">
+				{{#comments}}
+
+				<li class="list-group-item">
+					{{.}}
+					
+				</li>
+				{{/comments}}
+			</ul>
+		</script>
+	{% endverbatim %}
 {%endblock footer %}

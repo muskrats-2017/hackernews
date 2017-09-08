@@ -7,18 +7,38 @@ var createAJAXForm = function createAJAXForm(options){
 	self.onSubmit = options.onSubmit || function onSubmit($form, onSuccess, onError){
 		var self = this;
 
+		$form[0].reset();
 		$.ajax({
 			url: $form.attr("action"),
 			method: $form.attr("method"),
 			data: $form.serialize(),
 			success: onSuccess || self.onSuccess,
-			error: onError || self.onError
+			error: onError || self.onError($form)
 		});
 	};
 
 	self.onSuccess = options.onSuccess || function(){};
 
-	self.onError = options.onError || function(){};
+	self.onError = options.onError || function onError($form){
+		return function(jqXHR, textStatus, errorThrown){
+			var 
+				rendered = '<p class="text-danger">' + textStatus + '</p>',
+				template = '<ul class="errorlist">{{#errors}}<li>{{field}}<ul class="errorlist">{{#errors}}<li>{{message}}</li>{{/errors}}</ul></li>{{/errors}}</ul>',
+				data = {"errors": []};
+			
+			if (jqXHR.responseJSON){
+				let errors = JSON.parse(jqXHR.responseJSON);
+				$.each(errors, function(key, value){
+					data.errors.push({
+						"field": key,
+						"errors": value
+					});
+				});
+				rendered = Mustache.render(template, data);
+			}
+			$form.find("div.error-display").html(rendered);
+		};
+	}
 
 	return self;
 };
@@ -58,10 +78,9 @@ var mountCommentCreateComponent = function mountCommentCreateComponent($el){
 			function(data){
 				var commentFormContainer = $form.parents(".comment-form-container");
 				commentFormContainer.empty();
-				commentFormContainer.siblings("ul").append("<li>" + data + "</li>");
-			}, 
-			function(jqXHR, textStatus, errorThrown){
-				$form.find("div.error-display").html(jqXHR.responseText);
+				var template = $("#comment-detail-template"	).html();
+				var rendered = Mustache.render(template, data);
+				commentFormContainer.siblings("ul").append('<li class="list-group-item">' + rendered + '</li>');
 			}
 		);
 	});
@@ -109,8 +128,6 @@ var mountCommentUpdateComponent = function mountCommentUpdateComponent($el){
 				var commentFormContainer = $form.parents(".comment-form-container");
 				commentFormContainer.empty();
 				commentFormContainer.siblings("div.comment").html(data);
-			}, function(jqXHR, textStatus, errorThrown){
-				$form.find("div.error-display").html(jqXHR.responseText);
 			}
 		);
 	});
@@ -129,9 +146,6 @@ var mountCommentDeleteComponent = function mountCommentDeleteComponent($el){
 				var $comment = $form.parents("div.comment");
 				$comment.empty();
 				$comment.html(data);
-			}, 
-			function(jqXHR, textStatus, errorThrown){
-				$form.find("div.error-display").html(jqXHR.responseText);
 			}
 		);
 	});
@@ -162,21 +176,19 @@ var mountPostCreateCommentComponent = function mountPostCreateCommentComponent($
 		$commentFormContainer.html($form);
 	});
 
-	$el.on("submit", "form.comment-create-form", function(event){
+	$el.on("submit", ".post-form-container form.comment-create-form", function(event){
 		event.preventDefault();
 		var $form = $(this);
-		
+
 		createCommentForm.onSubmit(
 			$form, 
 			function(data){
 				console.log(arguments);
 				var commentFormContainer = $form.parents(".post-form-container");
 				commentFormContainer.empty();
-				commentFormContainer.siblings("ul").append("<li>" + data + "</li>");
-			}, 
-			function(jqXHR, textStatus, errorThrown){
-				console.log(arguments);
-				$form.find("div.error-display").html(jqXHR.responseText);
+				var template = $("#comment-detail-template").html();
+				var rendered = Mustache.render(template, data);
+				commentFormContainer.siblings("ul").append('<li class="list-group-item">' + rendered + '</li>');
 			}
 		);
 	});
@@ -194,7 +206,9 @@ var mountPostUpdateComponent = function mountPostUpdateComponent($el){
 				url: action,
 				method: 'GET',
 				success: function(data){
-					$form.find(".form-inputs").html(data);
+					var rendered = Mustache.render("{{#.}}{{{.}}}{{/.}}", Object.values(data));
+
+					$form.find(".form-inputs").html(rendered);
 					$form.attr("action", action);
 				},
 				error: function(jqXHR, textStatus, errorThrown){
@@ -226,8 +240,6 @@ var mountPostUpdateComponent = function mountPostUpdateComponent($el){
 				var postFormContainer = $form.parents(".post-form-container");
 				postFormContainer.empty();
 				postFormContainer.siblings("div.post").html(data);
-			}, function(jqXHR, textStatus, errorThrown){
-				$form.find("div.error-display").html(jqXHR.responseText);
 			}
 		);
 	});
@@ -246,9 +258,6 @@ var mountPostDeleteComponent = function mountPostDeleteComponent($el){
 				var $post = $form.parents("div.post");
 				$post.empty();
 				$post.html(data);
-			}, 
-			function(jqXHR, textStatus, errorThrown){
-				$form.find("div.error-display").html(jqXHR.responseText);
 			}
 		);
 	});
