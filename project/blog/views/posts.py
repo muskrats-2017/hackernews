@@ -90,12 +90,6 @@ class UpdateBlogView(LoginRequiredMixin, View):
 			response = self.get_response(request, form)			
 			return response or render(request, 'blog/update.html', context)		
 
-	def get_response(self, request, form, context=None):
-		if request.is_ajax() and form.is_valid():
-			return JsonResponse(context)
-
-		elif request.is_ajax():
-			return JsonResponse(form.errors.as_json(), safe=False, status=422)			
 
 class DeleteBlogView(LoginRequiredMixin, View):
 
@@ -121,11 +115,6 @@ class DeleteBlogView(LoginRequiredMixin, View):
 		})
 
 		return response or redirect('blog:list')
-
-	def get_response(self, request, context=None):
-		if request.is_ajax():
-			return JsonResponse(context)
-
 
 		
 class DetailView(LoginRequiredMixin, View):
