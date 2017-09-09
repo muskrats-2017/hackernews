@@ -4,6 +4,7 @@ var mountCommentDeleteComponent = function mountCommentDeleteComponent($el){
 	$el.on("submit", ".comment form.comment-delete-form", function(event){
 		event.preventDefault();
 		var $form = $(this);
+		$form.attr("action", deleteCommentForm.parseAction($form.attr("action")));
 		deleteCommentForm.onSubmit(
 			$form,
 			function(data){

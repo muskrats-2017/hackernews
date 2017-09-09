@@ -5,6 +5,7 @@ var mountPostDeleteComponent = function mountPostDeleteComponent($el){
 	$el.on("submit", ".post form.post-delete-form", function(event){
 		event.preventDefault();
 		var $form = $(this);
+		$form.attr("action", deletePostForm.parseAction($form.attr("action"), "blog"));
 		deletePostForm.onSubmit(
 			$form,
 			function(data){

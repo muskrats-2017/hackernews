@@ -39,7 +39,16 @@ var createAJAXForm = function createAJAXForm(options){
 			}
 			$form.find("div.error-display").html(rendered);
 		};
-	}
+	};
+
+
+	self.parseAction = function parseAction(action, replace){
+		var __replace = "/api/" + (replace ?  replace + "/":"");
+		console.log(action);
+		var new_action = action.replace(/^\/blog\//g, __replace);
+		console.log(new_action);
+		return new_action;
+	};
 
 	return self;
 };

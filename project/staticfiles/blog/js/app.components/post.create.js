@@ -18,7 +18,8 @@ var mountPostCreateCommentComponent = function mountPostCreateCommentComponent($
 		event.preventDefault();
 		var $this = $(this);
 		var $commentFormContainer = $this.parents(".post").siblings(".post-form-container");
-		var $form = createCommentForm.getForm($this.attr("href"));
+		var action = createCommentForm.parseAction($this.attr("href"));
+		var $form = createCommentForm.getForm(action);
 
 		$commentFormContainer.html($form);
 	});
@@ -26,6 +27,8 @@ var mountPostCreateCommentComponent = function mountPostCreateCommentComponent($
 	$el.on("submit", ".post-form-container form.comment-create-form", function(event){
 		event.preventDefault();
 		var $form = $(this);
+
+		$form.attr("action", createCommentForm.parseAction($form.attr("action")));
 
 		createCommentForm.onSubmit(
 			$form, 

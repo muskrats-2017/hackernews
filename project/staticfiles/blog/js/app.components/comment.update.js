@@ -26,8 +26,8 @@ var mountCommentUpdateComponent = function mountCommentUpdateComponent($el){
 		event.preventDefault();
 		var $this = $(this);
 		var $commentFormContainer = $this.parents(".comment").siblings(".comment-form-container");
-		
-		var $form = updateCommentForm.getForm($this.attr("href"));
+		var action = updateCommentForm.parseAction($this.attr("href"));
+		var $form = updateCommentForm.getForm(action);
 		
 		$commentFormContainer.html($form);
 	});
@@ -35,6 +35,9 @@ var mountCommentUpdateComponent = function mountCommentUpdateComponent($el){
 	$el.on("submit", ".comment-form-container form.comment-update-form", function(event){
 		event.preventDefault();
 		var $form = $(this);
+		
+		$form.attr("action", updateCommentForm.parseAction($form.attr("action")));
+		
 		updateCommentForm.onSubmit(
 			$form, 
 			function(data){

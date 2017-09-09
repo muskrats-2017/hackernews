@@ -39,14 +39,13 @@ var createAJAXForm = function createAJAXForm(options){
 			}
 			$form.find("div.error-display").html(rendered);
 		};
-	}
+	};
+
+
+	self.parseAction = function parseAction(action, replace){
+		var __replace = "/api/" + (replace ?  replace + "/":"");
+		return action.replace(/^\/blog\//g, __replace);
+	};
 
 	return self;
 };
-
-
-
-
-
-
-

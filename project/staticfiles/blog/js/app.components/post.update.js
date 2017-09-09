@@ -28,8 +28,8 @@ var mountPostUpdateComponent = function mountPostUpdateComponent($el){
 		event.preventDefault();
 		var $this = $(this);
 		var $postFormContainer = $this.parents(".post").siblings(".post-form-container");
-		
-		var $form = updatePostForm.getForm($this.attr("href"));
+		var action = updatePostForm.parseAction($this.attr("href"), "blog");
+		var $form = updatePostForm.getForm(action);
 		
 		$postFormContainer.html($form);
 	});
@@ -37,7 +37,9 @@ var mountPostUpdateComponent = function mountPostUpdateComponent($el){
 	$el.on("submit", "form.post-update-form", function(event){
 		event.preventDefault();
 		var $form = $(this);
-
+		
+		$form.attr("action", updatePostForm.parseAction($form.attr("action")));
+		
 		updatePostForm.onSubmit(
 			$form, 
 			function(data){
